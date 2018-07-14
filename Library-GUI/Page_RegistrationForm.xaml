@@ -34,21 +34,22 @@
         <!--Full Name-->
         <TextBlock Grid.Column="1" Grid.Row="2" Text="Full name" 
                    FontSize="18" HorizontalAlignment="Center" />
-        <TextBox Grid.Column="2" Grid.Row="2" Name="Text_FullName" 
+        <TextBox Grid.Column="2" Grid.Row="2" Name="Text_FullName" HorizontalAlignment="Center" VerticalAlignment="Center"
                  Width="150" Margin="20,0,0,0"/>
         <Label Visibility="Hidden" Name="Label_NameHelper" Content="*Helper text for Fullname" Grid.Column="6" Grid.Row="2" Background="red"/>
 
         <!--Age--> 
         <TextBlock Grid.Column="1" Grid.Row="3" Text="Age" FontSize="18" 
-                   Margin="20,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <TextBox Grid.Column="2" Grid.Row="3" Name="Text_Age" Width="150" 
-                 Margin="20,10,0,0" />
+                 Margin="20,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <Label Visibility="Hidden" Name="Label_AgeHelper" Content="*Helper text for age" Grid.Column="6" Grid.Row="3" Background="red"/>
         <!--DOB-->
-        <TextBlock Text="Date of Birth" Grid.Column="1" Grid.Row="4" 
+        <TextBlock Text="Email" Grid.Column="1" Grid.Row="4" 
                    FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <DatePicker Name="Text_DOB" Grid.Column="2" Grid.Row="4" Width="150" Margin="20,10,0,10" Padding="0,0,0,0" />
-        <Label Visibility="Hidden" Name="Label_DOBHelper" Content="*Helper text for age" Grid.Column="6" Grid.Row="4" Background="red"/>
+        <TextBox Name="Text_Email" Grid.Column="2" Grid.Row="4" Width="150" 
+                 HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,0,0,0" />
+        <Label Visibility="Hidden" Name="Label_EmailHelper" Content="*Helper text for email" Grid.Column="6" Grid.Row="4" Background="red"/>
 
         <!--Submit-->
         <Button Grid.Column="2" Grid.Row="5" Content="Submit" Margin="15" Padding="10"

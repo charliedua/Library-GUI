@@ -45,14 +45,14 @@ namespace Library_GUI
 				Label_AgeHelper.Visibility = Visibility.Hidden;
 			}
 
-			if (Regex.IsMatch(Text_DOB.Text, @"[0-9]{2}-[0-9]{2}-[0-9]{4}"))
+			if (Regex.IsMatch(Text_Email.Text, "^(? (\")(\".+? (?< !\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`\\{\\}\\|~\\w])*)(?<=[0-9a-z])@))(?(\\[)(\\[(\\d{1,3}\\.){3}\\d{1,3}\\])|(([0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9]))$))"))
 			{
-				DOB = (DateTime)Text_DOB.SelectedDate;
+				string email = Text_Email.Text;
 			}
 			else
 			{
-				Label_DOBHelper.Content = "Please Enter a valid date, or select from the calender";
-				Label_DOBHelper.Visibility = Visibility.Visible;
+				Label_EmailHelper.Content = "Please Enter a valid email";
+				Label_EmailHelper.Visibility = Visibility.Visible;
 				Submit = false;
 			}
 
@@ -74,7 +74,7 @@ namespace Library_GUI
 					"membership_id int NOT NULL AUTO_INCREMENT PRIMARY KEY," +
 					"DOB date NOT NULL," +
 					"Name varchar(25) NOT NULL," +
-					"Age int NOT NULL" +
+					"email varchar(100) NOT NULL" +
 					");";
 				MySqlCommand command = new MySqlCommand(query, conn);
 				try
@@ -88,6 +88,7 @@ namespace Library_GUI
 					conn.Close();
 					return;
 				}
+				
 				query = $"INSERT INTO members (DOB, Name, Age) VALUES ({DOB.ToString("YYYY-MM-DD")}, '{Name}', {Age});";
 				command = new MySqlCommand(query, conn);
 				try
@@ -103,6 +104,7 @@ namespace Library_GUI
 				}
 				conn.Close();
 			}
+			
 		}
 	}
 }
