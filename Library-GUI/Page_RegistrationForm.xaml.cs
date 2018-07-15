@@ -19,9 +19,9 @@ namespace Library_GUI
 
 		private void Btn_Submit_Click(object sender, RoutedEventArgs e)
 		{
+			string email = "";
 			bool Submit = true;
-			string FullName = Text_FullName.Text;
-			DateTime DOB = new DateTime();
+			string FullName = "";
 
 			if (!Regex.IsMatch(FullName, @"[A-Za-z ]{3,25}"))
 			{
@@ -47,7 +47,7 @@ namespace Library_GUI
 
 			if (Regex.IsMatch(Text_Email.Text, "^(? (\")(\".+? (?< !\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`\\{\\}\\|~\\w])*)(?<=[0-9a-z])@))(?(\\[)(\\[(\\d{1,3}\\.){3}\\d{1,3}\\])|(([0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9]))$))"))
 			{
-				string email = Text_Email.Text;
+				email = Text_Email.Text;
 			}
 			else
 			{
@@ -58,53 +58,108 @@ namespace Library_GUI
 
 			if (Submit)
 			{
-				string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
-				MySqlConnection conn = new MySqlConnection(connectionString);
-				try
-				{
-					conn.Open();
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show($"Connection cant be opend! \n error is {ex.Message.ToString()}",
-						@"Can't connect", MessageBoxButton.OK, MessageBoxImage.Error);
-					return;
-				}
 				string query = "CREATE TABLE IF NOT EXISTS members(" +
 					"membership_id int NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-					"DOB date NOT NULL," +
 					"Name varchar(25) NOT NULL," +
 					"email varchar(100) NOT NULL" +
 					");";
+				ExecuteNonQuery(query);
+				query = $"SELECT email FROM members WHERE email LIKE {email}";
+				Tuple<MySqlDataReader, bool> result_temp = ExecuteQuery(query);
+				if (result_temp.Item2)
+				{
+					MySqlDataReader reader = result_temp.Item1;
+					string EmailFromDB = "";
+					while (reader.Read())
+					{
+						reader.GetValues(new object[1] { EmailFromDB });
+					}
+					if (EmailFromDB == email)
+					{
+						Submit = false;
+					}
+					else
+					{
+						query = $"INSERT INTO members (email, Name, Age) VALUES ({email}, '{Name}', {Age});";
+						ExecuteNonQuery(query);
+					}
+				}
+				
+				
+			}
+		}
+		private static void ExecuteNonQuery(string query)
+		{
+			string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
+			MySqlConnection conn = new MySqlConnection(connectionString);
+			try
+			{
+				conn.Open();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Connection cant be opend! \n error is {ex.Message.ToString()}",
+					@"Can't connect", MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+			MySqlCommand command = new MySqlCommand(query, conn);
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error executing query \n{ex.ToString()}", "error",
+					MessageBoxButton.OK, MessageBoxImage.Error);
+				conn.Close();
+				return;
+			}
+			conn.Close();
+		}
+		
+		private static Tuple<MySqlDataReader, bool> ExecuteQuery(string query)
+		{
+			Tuple<MySqlConnection, bool> db_temp = DB_Connect();
+			MySqlConnection conn = null;
+			MySqlDataReader reader = null;
+			if (db_temp.Item2)
+			{
+				conn = db_temp.Item1;
 				MySqlCommand command = new MySqlCommand(query, conn);
 				try
 				{
-					command.ExecuteNonQuery();
+					reader = command.ExecuteReader();
+					return Tuple.Create(reader, true);
 				}
 				catch (Exception ex)
 				{
 					MessageBox.Show($"Error executing query \n{ex.ToString()}", "error",
 						MessageBoxButton.OK, MessageBoxImage.Error);
 					conn.Close();
-					return;
+					return Tuple.Create(reader, false);
 				}
-				
-				query = $"INSERT INTO members (DOB, Name, Age) VALUES ({DOB.ToString("YYYY-MM-DD")}, '{Name}', {Age});";
-				command = new MySqlCommand(query, conn);
-				try
-				{
-					command.ExecuteNonQuery();
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show($"Error executing query \n{ex.ToString()}", "error",
-						MessageBoxButton.OK, MessageBoxImage.Error);
-					conn.Close();
-					return;
-				}
-				conn.Close();
 			}
-			
+			else
+			{
+				return Tuple.Create(reader, false);
+			}
+		}
+
+		private static Tuple<MySqlConnection, bool> DB_Connect()
+		{
+			string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
+			MySqlConnection conn = new MySqlConnection(connectionString);
+			try
+			{
+				conn.Open();
+				return Tuple.Create(conn, true);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Connection cant be opend! \n error is {ex.Message.ToString()}",
+					@"Can't connect", MessageBoxButton.OK, MessageBoxImage.Error);
+				return Tuple.Create(conn, false);
+			}
 		}
 	}
 }
