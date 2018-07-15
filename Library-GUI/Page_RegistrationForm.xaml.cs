@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,7 +46,7 @@ namespace Library_GUI
 				Label_AgeHelper.Visibility = Visibility.Hidden;
 			}
 
-			if (Regex.IsMatch(Text_Email.Text, "^(? (\")(\".+? (?< !\\)\"@)|(([0-9a-z]((\\.(?!\\.))|[-!#\\$%&'\\*\\+/=\\?\\^`\\{\\}\\|~\\w])*)(?<=[0-9a-z])@))(?(\\[)(\\[(\\d{1,3}\\.){3}\\d{1,3}\\])|(([0-9a-z][-\\w]*[0-9a-z]*\\.)+[a-z0-9][\\-a-z0-9]{0,22}[a-z0-9]))$))"))
+			if (Regex.IsMatch(Text_Email.Text, @" ^ ([\w\.\-] +)@([\w\-] +)((\.(\w){ 2,3})+)$"))
 			{
 				email = Text_Email.Text;
 			}
@@ -69,25 +70,24 @@ namespace Library_GUI
 				if (result_temp.Item2)
 				{
 					MySqlDataReader reader = result_temp.Item1;
-					string EmailFromDB = "";
-					while (reader.Read())
-					{
-						reader.GetValues(new object[1] { EmailFromDB });
-					}
-					if (EmailFromDB == email)
+					DataTable dt = new DataTable();
+					dt.Load(reader);
+					if (dt.Rows.Count > 0)
 					{
 						Submit = false;
+						Label_EmailHelper.Content = "Your email already exists";
+						Label_EmailHelper.Visibility = Visibility.Visible;
 					}
 					else
 					{
+						Label_EmailHelper.Visibility = Visibility.Hidden;
 						query = $"INSERT INTO members (email, Name, Age) VALUES ({email}, '{Name}', {Age});";
 						ExecuteNonQuery(query);
 					}
 				}
-				
-				
 			}
 		}
+
 		private static void ExecuteNonQuery(string query)
 		{
 			string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
