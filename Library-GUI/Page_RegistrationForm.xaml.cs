@@ -82,7 +82,7 @@ namespace Library_GUI
 					else
 					{
 						Label_EmailHelper.Visibility = Visibility.Hidden;
-						query = $"INSERT INTO members (email, Name, Age) VALUES ('{email} ', '{FullName}', {Age});";
+						query = $"INSERT INTO members (email, Name, Age) VALUES ('{email}', '{FullName}', {Age});";
 						if (!ExecuteNonQuery(query))
 						{
 							Label_SubmitHelper.Content = "The query failed please try again.";
@@ -98,6 +98,7 @@ namespace Library_GUI
 			}
 		}
 
+		// Helper Methods For mysql connections
 		private static bool ExecuteNonQuery(string query)
 		{
 			var conn_temp = DB_Connect();
@@ -125,7 +126,6 @@ namespace Library_GUI
 			conn.Close();
 			return true;
 		}
-		
 		private static Tuple<MySqlDataReader, bool> ExecuteQuery(string query)
 		{
 			Tuple<MySqlConnection, bool> db_temp = DB_Connect();
@@ -153,7 +153,6 @@ namespace Library_GUI
 				return Tuple.Create(reader, false);
 			}
 		}
-
 		private static Tuple<MySqlConnection, bool> DB_Connect()
 		{
 			string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
@@ -170,5 +169,6 @@ namespace Library_GUI
 				return Tuple.Create(conn, false);
 			}
 		}
+
 	}
 }
