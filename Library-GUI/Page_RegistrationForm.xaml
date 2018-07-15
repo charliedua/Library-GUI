@@ -53,6 +53,9 @@
 
         <!--Submit-->
         <Button Grid.Column="2" Grid.Row="5" Content="Submit" Margin="15" Padding="10"
-                Name="Btn_Submit" Click="Btn_Submit_Click" /> 
+                Name="Btn_Submit" Click="Btn_Submit_Click" />
+        <Label Visibility="Hidden" Name="Label_SubmitHelper" 
+               Content="*Helper text for Submit" Grid.Column="6" Grid.Row="5" Background="red"/>
+
     </Grid>
 </Page>

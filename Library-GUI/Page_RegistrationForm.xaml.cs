@@ -24,15 +24,16 @@ namespace Library_GUI
 			bool Submit = true;
 			string FullName = "";
 
-			if (!Regex.IsMatch(FullName, @"[A-Za-z ]{3,25}"))
+			if (Regex.IsMatch(Text_FullName.Text, @"[A-Za-z ]{3,25}"))
+			{
+				FullName = Text_FullName.Text;
+				Label_NameHelper.Visibility = Visibility.Hidden;
+			}
+			else
 			{
 				Label_NameHelper.Visibility = Visibility.Visible;
 				Label_NameHelper.Content = "Please Enter a Valid name";
 				Submit = false;
-			}
-			else
-			{
-				Label_NameHelper.Visibility = Visibility.Hidden;
 			}
 
 			if (!int.TryParse(Text_Age.Text, out int Age))
@@ -46,7 +47,7 @@ namespace Library_GUI
 				Label_AgeHelper.Visibility = Visibility.Hidden;
 			}
 
-			if (Regex.IsMatch(Text_Email.Text, @" ^ ([\w\.\-] +)@([\w\-] +)((\.(\w){ 2,3})+)$"))
+			if (Regex.IsMatch(Text_Email.Text, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
 			{
 				email = Text_Email.Text;
 			}
@@ -62,10 +63,11 @@ namespace Library_GUI
 				string query = "CREATE TABLE IF NOT EXISTS members(" +
 					"membership_id int NOT NULL AUTO_INCREMENT PRIMARY KEY," +
 					"Name varchar(25) NOT NULL," +
-					"email varchar(100) NOT NULL" +
+					"email varchar(255) NOT NULL," +
+					"Age int NOT NULL" +
 					");";
 				ExecuteNonQuery(query);
-				query = $"SELECT email FROM members WHERE email LIKE {email}";
+				query = $"SELECT email FROM members WHERE email LIKE '{email}'";
 				Tuple<MySqlDataReader, bool> result_temp = ExecuteQuery(query);
 				if (result_temp.Item2)
 				{
@@ -74,33 +76,39 @@ namespace Library_GUI
 					dt.Load(reader);
 					if (dt.Rows.Count > 0)
 					{
-						Submit = false;
 						Label_EmailHelper.Content = "Your email already exists";
 						Label_EmailHelper.Visibility = Visibility.Visible;
 					}
 					else
 					{
 						Label_EmailHelper.Visibility = Visibility.Hidden;
-						query = $"INSERT INTO members (email, Name, Age) VALUES ({email}, '{Name}', {Age});";
-						ExecuteNonQuery(query);
+						query = $"INSERT INTO members (email, Name, Age) VALUES ('{email} ', '{FullName}', {Age});";
+						if (!ExecuteNonQuery(query))
+						{
+							Label_SubmitHelper.Content = "The query failed please try again.";
+							Label_SubmitHelper.Visibility = Visibility.Visible;
+						}
+						else
+						{
+							MessageBox.Show("Membership has been successfully activated", "Activation", MessageBoxButton.OK, MessageBoxImage.Information);
+							Label_SubmitHelper.Visibility = Visibility.Hidden;
+						}
 					}
 				}
 			}
 		}
 
-		private static void ExecuteNonQuery(string query)
+		private static bool ExecuteNonQuery(string query)
 		{
-			string connectionString = @"datasource=127.0.0.1;port=3306;database=Library_GUI;username=root;Password=;SslMode=none";
-			MySqlConnection conn = new MySqlConnection(connectionString);
-			try
+			var conn_temp = DB_Connect();
+			MySqlConnection conn = null;
+			if (conn_temp.Item2)
 			{
-				conn.Open();
+				conn = conn_temp.Item1;
 			}
-			catch (Exception ex)
+			else
 			{
-				MessageBox.Show($"Connection cant be opend! \n error is {ex.Message.ToString()}",
-					@"Can't connect", MessageBoxButton.OK, MessageBoxImage.Error);
-				return;
+				return false;
 			}
 			MySqlCommand command = new MySqlCommand(query, conn);
 			try
@@ -112,9 +120,10 @@ namespace Library_GUI
 				MessageBox.Show($"Error executing query \n{ex.ToString()}", "error",
 					MessageBoxButton.OK, MessageBoxImage.Error);
 				conn.Close();
-				return;
+				return false;
 			}
 			conn.Close();
+			return true;
 		}
 		
 		private static Tuple<MySqlDataReader, bool> ExecuteQuery(string query)
