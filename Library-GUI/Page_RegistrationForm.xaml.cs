@@ -68,7 +68,7 @@ namespace Library_GUI
 					"Age int NOT NULL" +
 					");";
 				SQL.ExecuteNonQuery(query);
-				query = $"SELECT email FROM members WHERE email LIKE '{email}'";
+				query = $"SELECT email FROM members WHERE email = '{email}'";
 				Tuple<MySqlDataReader, bool> result_temp = SQL.ExecuteQuery(query);
 				if (result_temp.Item2)
 				{
@@ -91,8 +91,9 @@ namespace Library_GUI
 						}
 						else
 						{
-							MessageBox.Show("Membership has been successfully activated", "Activation", MessageBoxButton.OK, MessageBoxImage.Information);
 							Label_SubmitHelper.Visibility = Visibility.Hidden;
+							MessageBox.Show("Membership has been successfully activated", "Activation", MessageBoxButton.OK, MessageBoxImage.Information);
+							NavigationService.Navigate(new Uri("Page_Main.xaml", UriKind.Relative));
 						}
 					}
 				}

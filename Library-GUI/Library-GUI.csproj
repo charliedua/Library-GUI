@@ -67,12 +67,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Page_Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Page_RegistrationForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Page_Main.xaml.cs">
+      <DependentUpon>Page_Main.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Page_RegistrationForm.xaml.cs">
       <DependentUpon>Page_RegistrationForm.xaml</DependentUpon>
     </Compile>

@@ -20,9 +20,6 @@ namespace Library_GUI
 	/// </summary>
 	public partial class MainWindow : NavigationWindow
 	{
-		public MainWindow()
-		{
-			InitializeComponent();
-		}
+		public MainWindow() => InitializeComponent();
 	}
 }
