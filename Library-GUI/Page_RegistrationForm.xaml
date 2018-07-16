@@ -52,10 +52,12 @@
         <Label Visibility="Hidden" Name="Label_EmailHelper" Content="*Helper text for email" Grid.Column="6" Grid.Row="4" Background="red"/>
 
         <!--Submit-->
-        <Button Grid.Column="2" Grid.Row="5" Content="Submit" Margin="15" Padding="10"
+        <Button Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" Content="Submit" Margin="15,50,15,15" Padding="10" Width="150"
                 Name="Btn_Submit" Click="Btn_Submit_Click" />
         <Label Visibility="Hidden" Name="Label_SubmitHelper" 
                Content="*Helper text for Submit" Grid.Column="6" Grid.Row="5" Background="red"/>
-
+        
+        <Button Grid.Column="3" Grid.Row="5" Content="Cancel" Margin="15,50,15,15" Padding="10" Width="150"
+                Name="Btn_Cancel" Click="Btn_Cancel_Click" />
     </Grid>
 </Page>

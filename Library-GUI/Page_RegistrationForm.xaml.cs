@@ -100,6 +100,9 @@ namespace Library_GUI
 			}
 		}
 
-
+		private void Btn_Cancel_Click(object sender, RoutedEventArgs e)
+		{
+			NavigationService.Navigate(new Uri("Page_Main.xaml", UriKind.Relative));
+		}
 	}
 }
