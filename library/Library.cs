@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace library
+namespace library_t
 {
-	class Library
+	public class Library
 	{
 		public Library(List<Shelf> shelves, List<string> topics)
 		{
