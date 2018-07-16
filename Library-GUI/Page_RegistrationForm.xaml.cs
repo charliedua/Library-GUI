@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
+using MySql.Data.MySqlClient;
 using SqlHelper;
 
 namespace Library_GUI

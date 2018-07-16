@@ -11,6 +11,7 @@ namespace SqlHelper
     public class SQL
     {
 		// Helper Methods For mysql connections
+		// Handles Heavy lifting
 		public static bool ExecuteNonQuery(string query)
 		{
 			var conn_temp = DB_Connect();
