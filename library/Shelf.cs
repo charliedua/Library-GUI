@@ -9,11 +9,8 @@ namespace library
 	class Shelf: List<Book>
 	{
 		// Syntax: SyntaxExample
-		public string Topic { get; set; }
+		public string Topic { get; private set; }
 
-		public void Contains()
-		{
-
-		}
+		public Shelf(string topic) => Topic = topic;
 	}
 }
