@@ -1,4 +1,5 @@
-﻿using System;
+﻿using library_t;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,11 @@ namespace Library_GUI
 	/// </summary>
 	public partial class MainWindow : NavigationWindow
 	{
+		public Library library { get; set; }
 		public MainWindow()
 		{
 			InitializeComponent();
+			Library library = new Library();
 		}
 	}
 }

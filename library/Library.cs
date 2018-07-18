@@ -15,14 +15,29 @@ namespace library_t
 
 		private List<Member> Members { get; set; }
 
-		public Library(List<Shelf> shelves)
+		public Library()
 		{
-			Shelves = shelves;
-			Members = GetMembers();
-			Topics = LoadTopics();
+			LoadResources();
 		}
 
-		private List<string> LoadTopics()
+		private void LoadShelves()
+		{
+			Shelf shelf;
+			foreach (string topic in Topics)
+			{
+				shelf = new Shelf(topic);
+				Shelves.Add(shelf);
+			}
+		}
+
+		private void LoadResources()
+		{
+			LoadMembers();
+			LoadTopics();
+			LoadShelves();
+		}
+
+		private void LoadTopics()
 		{
 			if (TopicsInitialize())
 			{
@@ -36,23 +51,15 @@ namespace library_t
 					DataTable dt = new DataTable();
 					dt.Load(reader);
 					string topic;
-					List<string> topics = new List<string>();
 					foreach (DataRow row in dt.Rows)
 					{
 						topic = row["Topic"].ToString();
-						topics.Add(topic);
+						Topics.Add(topic);
 					}
-					return topics;
 				}
-				else
-					return null;
 			}
-			else
-				return null;
-
 		}
 
-		// Helper
 		private bool TopicsInitialize()
 		{
 			string query = "CREATE TABLE IF NOT EXISTS `Topics`(Topic varchar(255) PRIMARY KEY);";
@@ -72,26 +79,13 @@ namespace library_t
 			}
 		}
 
-		private List<Member> GetMembers()
-		{
-			var temp = LoadMembers();
-			if (temp.Item2)
-			{
-				return temp.Item1;
-			}
-			else
-			{
-				return new List<Member>();
-			}
-		}
-
-		private static Tuple<List<Member>, bool> LoadMembers()
+		private void LoadMembers()
 		{
 			string query = "SELECT * FROM `members` WHERE 1=1;";
 			var conn_temp = SQL.ExecuteQuery(query);
-			Member member = new Member();
-			List<Member> members = new List<Member>();
+			Member member;
 			MySqlDataReader reader;
+			Members = new List<Member>(); 
 			if (conn_temp.Item2)
 			{
 				reader = conn_temp.Item1;
@@ -103,13 +97,8 @@ namespace library_t
 						row["Name"].ToString(),
 						row["email"].ToString(),
 						int.Parse(row["Age"].ToString()));
-					members.Add(member);
+					Members.Add(member);
 				}
-				return Tuple.Create(members, true);
-			}
-			else
-			{
-				return Tuple.Create(members, false);
 			}
 		}
 	}
