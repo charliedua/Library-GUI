@@ -31,7 +31,7 @@ namespace Library_GUI
 
 		private Library LoadLibraryFromDB()
 		{
-			
+			throw new NotImplementedException();
 		}
 
 		private void Btn_Registor_Click(object sender, RoutedEventArgs e)
